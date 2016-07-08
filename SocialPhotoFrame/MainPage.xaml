@@ -1,0 +1,127 @@
+﻿<Page xmlns:my="using:Syncfusion.UI.Xaml.Controls.Input" 
+    x:Class="SocialPhotoFrame.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SocialPhotoFrame"
+    xmlns:localConverters="using:SocialPhotoFrame.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:flickr="using:FlickrNet">
+    <Page.Resources>
+        <localConverters:InvertBoolConverter x:Key="InvertBoolConverter"/>
+        <localConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
+    <Page.BottomAppBar>
+        <CommandBar Name="AppCommandBar">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton
+                    x:Name="SettingsButton"
+                    Icon="Setting"
+                    Label="Settings"
+                    Tapped="SettingsButton_Tapped" />
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <local:AutoScrollListView x:Name="PictureGrid" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <local:AutoScrollListView.ItemTemplate>
+                <DataTemplate x:DataType="flickr:Photo">
+                    <Grid Height="{Binding ElementName=PictureGrid, Path=ActualHeight}" Width="{Binding ElementName=PictureGrid, Path=ActualWidth}">
+                        <Image Source="{Binding LargeUrl}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Title}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" Foreground="#C94F4F4F" FontFamily="Viner Hand ITC" FontSize="24" FontWeight="Bold"/>
+                    </Grid>
+                </DataTemplate>
+            </local:AutoScrollListView.ItemTemplate>
+        </local:AutoScrollListView>
+
+        <Button Name="FullscreenButton" Content="FS" Tapped="FullscreenButton_Tapped" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"/>
+
+        <Popup
+            x:Name="SettingsPopup"
+            IsLightDismissEnabled="True"
+            IsOpen="False">
+
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition Edge="Right" />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+
+            <Border
+                x:Name="RootPopupBorder"
+                Background="{StaticResource SystemControlBackgroundChromeMediumLowBrush}"
+                BorderBrush="{StaticResource SystemControlForegroundAccentBrush}"
+                BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="60"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        Style="{StaticResource TitleTextBlockStyle}" 
+                        Text="Settings"
+                        Margin="10"/>
+
+                    <ToggleSwitch
+                            Grid.Row="1"
+                            Name="UsernameToggle"
+                            Margin="10,0"
+                            Width="281"
+                            HorizontalAlignment="Left"
+                            Header="Show user photos instead of tags"
+                            IsOn="{x:Bind AppSettings.SearchByUserName, Mode=TwoWay}" />
+
+
+                    <TextBlock 
+                            Grid.Row="2" 
+                            Text="Flickr tags"
+                            HorizontalAlignment="Left" 
+                            Height="32"
+                            Margin="10,0"
+                            VerticalAlignment="Bottom"
+                            TextAlignment="Left"/>
+
+                    <TextBox Margin="10,0" Grid.Row="3" Text="{Binding Path=AppSettings.FlickrTags, Mode=TwoWay}" IsEnabled="{Binding ElementName=UsernameToggle, Path=IsOn, Converter={StaticResource InvertBoolConverter}}"/>
+
+                    <TextBlock 
+                            Grid.Row="4" 
+                            Text="Flickr user name"
+                            HorizontalAlignment="Left" 
+                            Height="32"
+                            Margin="10,0"
+                            VerticalAlignment="Bottom"
+                            TextAlignment="Left"/>
+
+                    <TextBox Margin="10,0" Grid.Row="5" Text="{Binding Path=AppSettings.FlickrUsername, Mode=TwoWay}" IsEnabled="{Binding ElementName=UsernameToggle, Path=IsOn }"/>
+
+                    <TextBlock 
+                            Grid.Row="6" 
+                            Text="Photo display interval"
+                            HorizontalAlignment="Left" 
+                            Height="32"
+                            Margin="10,0"
+                            VerticalAlignment="Bottom"
+                            TextAlignment="Left"/>
+                    
+                    <my:SfNumericUpDown Margin="10,0" Grid.Row="7" Value="{Binding Path=AppSettings.PhotDisplayInterval, Mode=TwoWay}" FormatString="N" Minimum="0" SpinButtonsAlignment="Both" MaximumNumberDecimalDigits="0"/>
+
+                    <!--<Button Margin="10,0" Grid.Row="9" Name="AuthorizeButton" Content="Authorize App" Tapped="AuthorizeButton_Tapped"  HorizontalAlignment="Right"/>-->
+                    <Button Margin="10,0" Grid.Row="10" Name="SaveSettingsButton" Content="Save" Tapped="SaveSettingsButton_Tapped" HorizontalAlignment="Right"/>
+                </Grid>
+            </Border>
+        </Popup>
+    </Grid>
+</Page>
