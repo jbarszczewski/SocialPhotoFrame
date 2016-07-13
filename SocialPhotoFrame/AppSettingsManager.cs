@@ -11,12 +11,14 @@ namespace SocialPhotoFrame
         private const string PHOTODISPLAYINTERVAL = @"PhotoDisplayInterval";
         private const string FLICKRACCESSTOKEN = @"FlickrAccessToken";
         private const string FLICKRACCESSTOKENSECRET = @"FlickrAccessTokenSecret";
+        private const string FILLSCREEN = @"FillScreen";
 
         private ApplicationDataContainer localSettings;
         private ApplicationDataContainer roamingSettings;
         private string flickrTags;
         private string flickrUsername;
         private bool searchByUsername;
+        private bool fillScreen;
         private int photoDisplayInterval;
         private string flickrAccessToken;
         private string flickrAccessTokenSecret;
@@ -29,6 +31,8 @@ namespace SocialPhotoFrame
             this.flickrUsername = this.localSettings.Values[FLICKRUSERNAME]?.ToString();
             var tempSearchByUsername = (bool?)this.localSettings.Values[SEARCHBYUSERNAME];
             this.searchByUsername = tempSearchByUsername.HasValue ? tempSearchByUsername.Value : false;
+            var tempFillScreen = (bool?)this.localSettings.Values[FILLSCREEN];
+            this.fillScreen = tempFillScreen.HasValue ? tempFillScreen.Value : false;
             var tempPhotoDisplayInterval = this.localSettings.Values[PHOTODISPLAYINTERVAL] as int?;
             this.photoDisplayInterval = tempPhotoDisplayInterval.HasValue ? tempPhotoDisplayInterval.Value : 10;
             this.flickrAccessToken = this.localSettings.Values[FLICKRACCESSTOKEN]?.ToString();
@@ -71,6 +75,19 @@ namespace SocialPhotoFrame
             {
                 SetProperty<bool>(ref this.searchByUsername, value);
                 this.localSettings.Values[SEARCHBYUSERNAME] = value;
+            }
+        }
+
+        public bool FillScreen
+        {
+            get
+            {
+                return this.fillScreen;
+            }
+            set
+            {
+                SetProperty<bool>(ref this.fillScreen, value);
+                this.localSettings.Values[FILLSCREEN] = value;
             }
         }
 

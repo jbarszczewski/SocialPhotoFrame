@@ -16,6 +16,7 @@ namespace SocialPhotoFrame
     {
         public const string APIKEY = "b2731623eb48a83a1ccd4ebf762d52a5";
         public const string SHAREDSECRET = "ee64f2535327c2d6";
+
         private readonly Flickr flickrClient;
         private ApplicationView view;
 
@@ -32,35 +33,56 @@ namespace SocialPhotoFrame
             }
 
             this.DataContext = this;
-            Loaded += MainPage_Loaded;
+            this.Loaded += MainPage_Loaded;
         }
 
         public AppSettingsManager AppSettings { get; private set; }
 
-        public bool IsFullscreen => this.view.IsFullScreenMode;
-
         async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.AppSettings.SearchByUserName)
+            this.UpdateControls();
+            await LoadPhotosAsync();
+            this.SizeChanged += (s, ea) => UpdateControls();
+        }
+
+        private void UpdateControls()
+        {
+            if (this.view.IsFullScreenMode)
             {
-                var user = await flickrClient.PeopleFindByUserNameAsync(this.AppSettings.FlickrUsername);
-                this.PictureGrid.ItemsSource = await flickrClient.PeopleGetPhotosAsync(user.UserId);
+                this.BottomAppBar.Visibility = Visibility.Collapsed;
+                this.FullScreenSymbolIcon.Symbol = Symbol.BackToWindow;
             }
-            else if (!string.IsNullOrEmpty(this.AppSettings.FlickrTags))
-                this.PictureGrid.ItemsSource = await flickrClient.PhotosSearchAsync(new PhotoSearchOptions { Tags = this.AppSettings.FlickrTags, PerPage = 10, SortOrder = PhotoSearchSortOrder.InterestingnessDescending });
-
-            this.SizeChanged += (s, ea) =>
+            else
             {
-                if (this.view.IsFullScreenMode)
-                    this.BottomAppBar.Visibility = Visibility.Collapsed;
-                else
-                    this.BottomAppBar.Visibility = Visibility.Visible;
+                this.BottomAppBar.Visibility = Visibility.Visible;
+                this.FullScreenSymbolIcon.Symbol = Symbol.FullScreen;
+            }
 
-                //TODO: temp fix for updating size of items
-                var tempItems = PictureGrid.ItemsSource;
-                this.PictureGrid.ItemsSource = null;
-                this.PictureGrid.ItemsSource = tempItems;
-            };
+            //TODO: temp fix for updating size of items
+            if(this.PictureGrid.ItemsSource == null)
+                return;
+            var tempItems = PictureGrid.ItemsSource;
+            this.PictureGrid.ItemsSource = null;
+            this.PictureGrid.ItemsSource = tempItems;
+        }
+
+        private async Task LoadPhotosAsync()
+        {
+            try
+            {
+                if (this.AppSettings.SearchByUserName)
+                {
+                    var user = await flickrClient.PeopleFindByUserNameAsync(this.AppSettings.FlickrUsername);
+                    this.PictureGrid.ItemsSource = await flickrClient.PeopleGetPhotosAsync(user.UserId);
+                }
+                else if (!string.IsNullOrEmpty(this.AppSettings.FlickrTags))
+                    this.PictureGrid.ItemsSource = await flickrClient.PhotosSearchAsync(new PhotoSearchOptions { Tags = this.AppSettings.FlickrTags, PerPage = 10, SortOrder = PhotoSearchSortOrder.InterestingnessDescending });
+            }
+            catch(Exception ex)
+            {
+                var dialog = new MessageDialog(ex.Message);
+                await dialog.ShowAsync();
+            }
         }
 
         private void FullscreenButton_Tapped(object sender, TappedRoutedEventArgs e)
@@ -76,7 +98,7 @@ namespace SocialPhotoFrame
             if (!SettingsPopup.IsOpen)
             {
                 RootPopupBorder.Width = ActualWidth * 0.9;
-                RootPopupBorder.Height = ActualHeight * 0.9;
+                SettingsPopup.VerticalAlignment = VerticalAlignment.Stretch;
                 SettingsPopup.HorizontalOffset = Window.Current.Bounds.Width - RootPopupBorder.Width;
                 SettingsPopup.IsOpen = true;
             }
@@ -84,14 +106,7 @@ namespace SocialPhotoFrame
 
         private async void SaveSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (this.AppSettings.SearchByUserName)
-            {
-                var user = await this.flickrClient.PeopleFindByUserNameAsync(this.AppSettings.FlickrUsername);
-                PictureGrid.ItemsSource = await flickrClient.PeopleGetPhotosAsync(user.UserId);
-            }
-            else if (!string.IsNullOrEmpty(this.AppSettings.FlickrTags))
-                PictureGrid.ItemsSource = await this.flickrClient.PhotosSearchAsync(new PhotoSearchOptions { Tags = this.AppSettings.FlickrTags, PerPage = 10, SortOrder = PhotoSearchSortOrder.InterestingnessDescending });
-
+            await LoadPhotosAsync();
             SettingsPopup.IsOpen = false;
         }
 
