@@ -65,7 +65,7 @@
         </local:AutoScrollListView>
 
         <Button Name="FullscreenButton" Tapped="FullscreenButton_Tapped" HorizontalAlignment="Right"
-                VerticalAlignment="Top" Margin="10" Background="White">
+                VerticalAlignment="Top" Margin="10" Background="WhiteSmoke">
             <SymbolIcon x:Name="FullScreenSymbolIcon" Symbol="FullScreen"/>
         </Button>
 
