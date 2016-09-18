@@ -1,4 +1,6 @@
-﻿<Page xmlns:sfm="using:Syncfusion.UI.Xaml.Controls.Media"  xmlns:sfi="using:Syncfusion.UI.Xaml.Controls.Input"
+﻿<Page xmlns:sfm="using:Syncfusion.UI.Xaml.Controls.Media"  
+      xmlns:sfi="using:Syncfusion.UI.Xaml.Controls.Input"
+      xmlns:sfn="using:Syncfusion.UI.Xaml.Controls.Navigation"
       x:Class="SocialPhotoFrame.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -65,7 +67,7 @@
         </local:AutoScrollListView>
 
         <Button Name="FullscreenButton" Tapped="FullscreenButton_Tapped" HorizontalAlignment="Right"
-                VerticalAlignment="Top" Margin="10" Background="WhiteSmoke">
+                VerticalAlignment="Top" Margin="10" Background="#3F000000">
             <SymbolIcon x:Name="FullScreenSymbolIcon" Symbol="FullScreen"/>
         </Button>
 
@@ -79,35 +81,35 @@
                     <PaneThemeTransition Edge="Right" />
                 </TransitionCollection>
             </Popup.ChildTransitions>
-            <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto">
-                <Border
+            <Border
                 x:Name="RootPopupBorder"
                 Background="{StaticResource SystemControlBackgroundChromeMediumLowBrush}"
                 BorderBrush="{StaticResource SystemControlForegroundAccentBrush}"
                 BorderThickness="1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                            <RowDefinition Height="60" />
-                        </Grid.RowDefinitions>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <sfn:SfTabControl SelectedIndex="0">
+                        <sfn:SfTabItem Header="General">
 
-                        <TextBlock
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
                         Grid.Row="0"
                         Style="{StaticResource TitleTextBlockStyle}"
                         Text="Settings"
                         Margin="10" />
 
-                        <ToggleSwitch
+                                <ToggleSwitch
                         Grid.Row="1"
                         Name="UsernameToggle"
                         Margin="10,0"
@@ -116,7 +118,7 @@
                         Header="Show user photos instead of tags"
                         IsOn="{x:Bind AppSettings.SearchByUserName, Mode=TwoWay}" />
 
-                        <TextBlock
+                                <TextBlock
                         Grid.Row="2"
                         Text="Flickr tags"
                         HorizontalAlignment="Left"
@@ -125,10 +127,10 @@
                         VerticalAlignment="Bottom"
                         TextAlignment="Left" />
 
-                        <TextBox Margin="10,0" Grid.Row="3" Text="{Binding Path=AppSettings.FlickrTags, Mode=TwoWay}"
+                                <TextBox Margin="10,0" Grid.Row="3" Text="{Binding Path=AppSettings.FlickrTags, Mode=TwoWay}"
                              IsEnabled="{Binding ElementName=UsernameToggle, Path=IsOn, Converter={StaticResource InvertBoolConverter}}" />
 
-                        <TextBlock
+                                <TextBlock
                         Grid.Row="4"
                         Text="Flickr user name"
                         HorizontalAlignment="Left"
@@ -137,22 +139,11 @@
                         VerticalAlignment="Bottom"
                         TextAlignment="Left" />
 
-                        <TextBox Margin="10,0" Grid.Row="5" Text="{Binding Path=AppSettings.FlickrUsername, Mode=TwoWay}"
+                                <TextBox Margin="10,0" Grid.Row="5" Text="{Binding Path=AppSettings.FlickrUsername, Mode=TwoWay}"
                              IsEnabled="{Binding ElementName=UsernameToggle, Path=IsOn }" />
 
-                        <!--<ToggleSwitch
+                                <TextBlock
                         Grid.Row="6"
-                        Name="FillScreenToggle"
-                        Margin="10,0"
-                        Width="281"
-                        HorizontalAlignment="Left"
-                        Header="Fill screen with photo (will crop content) ?"
-                        IsOn="{x:Bind AppSettings.FillScreen, Mode=TwoWay}" />-->
-
-                        <sfm:SfColorPicker Grid.Row="6" Name="BackgroundColorPicker" SelectedColor="#FF000000"/>
-
-                        <TextBlock
-                        Grid.Row="7"
                         Text="Photo display interval"
                         HorizontalAlignment="Left"
                         Height="32"
@@ -160,17 +151,56 @@
                         VerticalAlignment="Bottom"
                         TextAlignment="Left" />
 
-                        <sfi:SfNumericUpDown Margin="10,0" Grid.Row="8"
+
+                                <sfi:SfNumericUpDown Margin="10,0" Grid.Row="7"
                                         Value="{Binding Path=AppSettings.PhotoDisplayInterval, Mode=TwoWay}"
                                         FormatString="N" Minimum="1" SpinButtonsAlignment="Both"
                                         MaximumNumberDecimalDigits="0" />
+                            </Grid>
+                        </sfn:SfTabItem>
+                        <sfn:SfTabItem Header="Appearance">
 
-                        <!--<Button Margin="10,0" Grid.Row="10" Name="AuthorizeButton" Content="Authorize App" Tapped="AuthorizeButton_Tapped"  HorizontalAlignment="Right"/>-->
-                        <Button Margin="10,0" Grid.Row="11" Name="SaveSettingsButton" Content="Save"
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+                                
+                                <ToggleSwitch
+                        Grid.Row="0"
+                        Name="FillScreenToggle"
+                        Margin="10,0"
+                        Width="281"
+                        HorizontalAlignment="Left"
+                        Header="Fill screen with photo (will crop content) ?"
+                        IsOn="{x:Bind AppSettings.FillScreen, Mode=TwoWay}" />
+                                
+                                <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource TitleTextBlockStyle}"
+                        Text="Background"
+                        Margin="10" />
+
+                                <sfm:SfColorPicker Grid.Row="2" Name="BackgroundColorPicker" SelectedColor="#FF000000"/>
+
+                            </Grid>
+                        </sfn:SfTabItem>
+                        <sfn:SfTabItem Header="Social">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60"/>
+                                </Grid.RowDefinitions>
+
+                                <Button Margin="10,0" Grid.Row="0" Name="AuthorizeButton" Content="Authorize App" Tapped="AuthorizeButton_Tapped"  HorizontalAlignment="Right"/>
+                            </Grid>
+                        </sfn:SfTabItem>
+                    </sfn:SfTabControl>
+
+                    <Button Margin="10,0" Grid.Row="10" Name="SaveSettingsButton" Content="Save"
                             Tapped="SaveSettingsButton_Tapped" HorizontalAlignment="Right" />
-                    </Grid>
-                </Border>
-            </ScrollViewer>
+                </StackPanel>
+            </Border>
         </Popup>
     </Grid>
 </Page>

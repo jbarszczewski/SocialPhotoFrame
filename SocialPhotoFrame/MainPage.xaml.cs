@@ -97,7 +97,7 @@ namespace SocialPhotoFrame
         {
             if (!SettingsPopup.IsOpen)
             {
-                RootPopupBorder.Width = ActualWidth * 0.9;
+                RootPopupBorder.Width = ActualWidth * 0.75;
                 SettingsPopup.VerticalAlignment = VerticalAlignment.Stretch;
                 SettingsPopup.HorizontalOffset = Window.Current.Bounds.Width - RootPopupBorder.Width;
                 SettingsPopup.IsOpen = true;
